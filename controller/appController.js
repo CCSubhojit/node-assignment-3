@@ -99,8 +99,6 @@ exports.showForm = async (req, res, next) => {
       allElements,
     };
 
-    console.log(baseData);
-
     // On success render the view
     res.render("../views/index", { baseData });
   } catch (err) {
