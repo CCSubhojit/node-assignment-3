@@ -14,7 +14,8 @@ Mongodb Atlas Cloud database
 
 1. Nodejs should be installed already
 2. Clone repo from the above git link
-3. Create a ```config.env``` file in the root folder with the below details
+3. Type ```npm install``` to install the dependencies
+4. Create a ```config.env``` file in the root folder with the below details
 ```
 BASE_URL="assignment-3"
 DB_PASS = <YOUR_MONGO_ATLAS_PASSWORD>
