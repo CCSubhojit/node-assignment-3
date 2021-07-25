@@ -27,4 +27,5 @@ DB_BASE_URL =<YOUR_MONGO_ATLAS_DB_URL_WITH_REPLACEMENT_TOKEN> **
 6. type ```npm start``` in the console and hit enter
 7. Open ```http://127.0.0.1:3000/``` in a browser.
 
+---
 ** Like ```mongodb+srv://someusername:<PASSWORD>@cluster0.sbgxh.mongodb.net/<DBNAME>?retryWrites=true&w=majority```
