@@ -9,6 +9,17 @@ const appSchema = new mongoose.Schema({
     type: String,
     required: [true, "Label is required field."],
   },
+  name: {
+    type: String,
+    required: [true, "Name is required field."],
+    validate:{ // This only works on CREATE and SAVE
+        validator: function(el) {
+          // const regex = /[^a-zA-Z0-9-]/;
+          return !el.match(/[^a-zA-Z0-9-]/);
+        },
+        message: "Special charachter and space are not allowed"
+    }
+  },
   html_id: {
     type: String,
     required: [true, "Id is required field."],

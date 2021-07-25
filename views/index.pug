@@ -2,17 +2,63 @@ doctype html
 html 
   head 
     title Dynamic form 
+    style(type='text/css').
+      table{
+        width:100%; 
+        border-collapse:collapse;
+      }
+      th{
+        background:#eee;
+        padding:5px;
+        text-transform:capitalize;
+      }
+      td {
+        vertical-align:top;
+        padding:5px;
+      }
+      .required{
+        color:#D8000C;
+      }
+      .graytexts{
+        color:#A2A2A2;
+        font-size:11px;
+        font-family:courier;
+      }
+      button {
+        background-color: #4CAF50;
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+      }
   body
-    table(style='width:100%; border-collapse:collapse', border='1') 
+    div(style="text-align:center")
+      h1 ASSIGNMENT 3
+    hr  
+    div
+      h2 Tasks
+      ol 
+        li Create a dynamic attribute (any, e.g. Name - textbox), 
+        li save all the necessary information in the database.
+        li then generate the attribute on a blank template, // UI
+        li where any changes made to the attribute, will change the attribute in the template also // (eg. name, id, class, size, etc etc). 
+        li now save the data from the dynamic form into the database.
+    hr    
+    table( border='1') 
       tr
         td(style='width:50%; padding:10px')
-          h2 Element Form
+          h2 Dynamic Form Attributes
           hr
           form(action="/update-elements", method="post")          
             table(style='width:auto', border='0')
               tr
                 td Type:
-                  span(style="color:#D8000C") * 
+                  span(class="required") * 
                 td 
                   select(type="select" name="type")
                     option(value='', selected=!baseData.stored_element.rawData.type) (empty)
@@ -20,89 +66,154 @@ html
                       //- option(value=opt) #{opt}
                       option(value=opt selected=(opt===baseData.stored_element.rawData.type)) #{opt}
               tr
-                td(style="vertical-align:top") ClassName: 
+                td ClassName: 
                 td 
                   input(type="text", placeholder="classname", name="classname", value=`${ baseData.stored_element.filtered.classNameCsv }` )
                   br
-                  span(style='font-size: 11px; color: #BBB') For multiple, separate by comma
+                  span(class="graytexts") For multiple, separate by comma
               tr
                 td Label:
-                  span(style="color:#D8000C") *
+                  span(class="required") *
                 td 
                   input(type="text", placeholder="label", name="label", value=`${ baseData.stored_element.rawData.label }`)
               tr
+                td Name:
+                  span(class="required") *
+                td 
+                  input(type="text", placeholder="name", name="name", value=`${ baseData.stored_element.rawData.name }`)    
+              tr
                 td Placeholder Text:
-                  span(style="color:#D8000C") *
+                  span(class="required") *
                 td  
                   input(type="text", placeholder="placeholder", name="placeholder", value=`${ baseData.stored_element.rawData.placeholder }`)
               tr 
                 td Id: 
-                  span(style="color:#D8000C") *
+                  span(class="required") *
                 td 
                   input(type="text", placeholder="html_id", name="html_id", value=`${ baseData.stored_element.rawData.html_id }`)
               tr
                 td Width: 
-                  span(style="color:#D8000C") *
+                  span(class="required") *
                 td 
                   input(type="number", placeholder="width", name="width", value=`${ baseData.stored_element.rawData.width }`) 
               tr 
                 td Height: 
-                  span(style="color:#D8000C") *
+                  span(class="required") *
                 td 
                   input(type="number", placeholder="height", name="height", value=`${ baseData.stored_element.rawData.height }`)
               tr 
                 td MinLength: 
-                  span(style="color:#D8000C") *
+                  span(class="required") *
                 td 
                   input(type="number", placeholder="minlength", name="minlength", value=`${ baseData.stored_element.rawData.minlength }`)
               tr 
                 td MaxLength: 
-                  span(style="color:#D8000C") *
+                  span(class="required") *
                 td 
                   input(type="number", placeholder="maxlength", name="maxlength", value=`${ baseData.stored_element.rawData.maxlength }`)
               tr 
-                td(style="vertical-align:top") Style: 
+                td Style: 
                 td 
                   textarea(name="other_styles", cols="50", rows="5", style="resize:none")
                     |#{baseData.stored_element.filtered.otherStylesArray}
                   br
-                  span(style='font-size: 11px;color: #BBB') For multiple, separate by comma
+                  span(class="graytexts") For multiple, separate by comma
                   br 
                   br
                   br
                   hr
-                  span(style="color:#D8000C") * 
-                  span(style='font-size: 11px;color: #BBB') marked fields are required fields.
+                  span(class="required") * 
+                  span(class="graytexts") marked fields are required fields.
               tr 
                 td
                 td    
                   p 
-                    button(type="submit") Generate
-        
+                    button(type="submit") GENERATE INPUT
+
+          //- hr
+          //- h2 All DB data 
+          //- table( border='1')
+          //-   each elem in baseData.allElements        
+          //-     tr
+          //-       td 
+          //-         div #{ JSON.stringify(elem) }  
         td(style='width:50%; padding:10px; vertical-align:top', vailgn="top")
-          h2 Output 
+          h2 Dynamic Form 
           hr
           div(style="margin-bottom:70px")
-            //- form(action="/other-task", method="post")
             if baseData.stored_element.rawData.type
-              if baseData.stored_element.rawData.type === 'text'
-                p #{baseData.stored_element.rawData.label}                
-                input(style="width:300px; padding:10px")&attributes(
-                  baseData.stored_element.inputAttribute
-                )
-              else if baseData.stored_element.rawData.type === 'textarea'
-                p #{baseData.stored_element.rawData.label}
-                textarea(style="resize: none;" cols="50" rows="5")&attributes(
-                  baseData.stored_element.inputAttribute
-                )  
+              form(action="/dynamic-form-submit", method="post")
+                if baseData.stored_element.rawData.type === 'text'
+                  p #{baseData.stored_element.rawData.label}                
+                  input(style="width:300px; padding:10px")&attributes(
+                    baseData.stored_element.inputAttribute
+                  )
+                else if baseData.stored_element.rawData.type === 'textarea'
+                  p #{baseData.stored_element.rawData.label}
+                  textarea(style="resize: none;" cols="50" rows="5")&attributes(
+                    baseData.stored_element.inputAttribute
+                  )
+                input(type="hidden" name="element_type" value=`${baseData.stored_element.rawData.type}`)
+                p 
+                  button(type="submit") SAVE
+                
             else 
               p No active data found to create an element. 
+          hr
+          h2 Saved data 
+            span(class="graytexts") ( collection: formdatas )
+          table( border='1')
+            tr
+              th Type
+              th Data
+              th Created AT
+              each data in baseData.allSavedDatas  
+                tr
+                  td #{data.type}
+                  td #{data.data}
+                  td #{data.created_at}    
+      
+      
     hr
     h2 All DB data 
-    
-    table(style='width:100%; border-collapse:collapse', border='1')
+      span(class="graytexts") ( collection: elements ) 
+      
+    table( border='1')
+      tr
+        th type
+        th label
+        th name
+        th is_active
+        th placeholder
+        th html_id
+        th stats
+        th class_name
+        th other_style
+        th created_at
       each elem in baseData.allElements        
         tr
+          td #{elem.type}
+          td #{elem.label}
+          td #{elem.name}
+          td #{elem.is_active}
+          td #{elem.placeholder}
+          td #{elem.html_id}
           td 
-            div #{ JSON.stringify(elem) }
+            table( border='1')
+              tr 
+                td Width
+                td #{elem.width} 
+              tr 
+                td Height
+                td #{elem.height}
+              tr 
+                td MinLength
+                td #{elem.minlength}
+              tr 
+                td MaxLength
+                td #{elem.maxlength}
+          td #{JSON.stringify(elem.className)}
+          td #{JSON.stringify(elem.other_style)}
+          td #{elem.created_at}
+        
 

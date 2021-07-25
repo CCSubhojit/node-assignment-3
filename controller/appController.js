@@ -1,4 +1,6 @@
 const Elements = require("../model/appModel");
+const FormDatas = require("../model/formDataModel");
+
 const Url = require("url");
 
 /**
@@ -17,6 +19,7 @@ const filterData = (dbElementData) => {
       type: "",
       label: "",
       html_id: "",
+      name: "",
       width: "",
       height: "",
       placeholder: "",
@@ -91,12 +94,14 @@ exports.showForm = async (req, res, next) => {
   try {
     const elements = await Elements.findOne({ is_active: true });
     const allElements = await Elements.find().sort("-is_active");
+    const allSavedDatas = await FormDatas.find().sort("-created_at");
     const filterdData = await filterData(elements);
 
     const baseData = {
       select_type: ["text", "textarea"],
       stored_element: filterdData,
       allElements,
+      allSavedDatas,
     };
 
     // On success render the view
@@ -144,6 +149,29 @@ exports.updateFormElement = async (req, res, next) => {
     const newElement = await Elements.create(cloneBody);
 
     // On success redirect to the hompage
+    res.redirect("/");
+  } catch (err) {
+    res.status(400).json({
+      status: "fail",
+      message: err,
+    });
+  }
+};
+
+// Saving data in database from dynamic input
+exports.saveDynamicFormData = async (req, res, next) => {
+  try {
+    const cloneBody = { ...req.body };
+
+    const postData = {};
+    postData.type = cloneBody.element_type ? cloneBody.element_type : 'text';
+    delete cloneBody.element_type;
+    
+    const remainingData = Object.values(cloneBody);    
+    postData.data = remainingData[0] ? remainingData[0] : "";
+
+    // creating new entry
+    const newData = await FormDatas.create(postData);
     res.redirect("/");
   } catch (err) {
     res.status(400).json({
